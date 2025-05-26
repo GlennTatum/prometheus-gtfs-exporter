@@ -8,9 +8,9 @@
 
 syntax = "proto2";
 
-import "com/google/transit/realtime/gtfs-realtime.proto";
+import "gtfs-realtime.proto";
 
-option java_package = "com.google.transit.realtime";
+option go_package = "protobuf/";
 package transit_realtime;
 
 message TripReplacementPeriod {
