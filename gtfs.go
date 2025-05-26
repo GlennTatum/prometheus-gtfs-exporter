@@ -1,4 +1,4 @@
-package gtfs
+package mta
 
 import (
 	"net/http"
