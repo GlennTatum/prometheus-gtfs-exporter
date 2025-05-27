@@ -2,13 +2,8 @@ package main
 
 import (
 	"fmt"
-	"io"
-	"net/http"
 
 	"github.com/GlennTatum/prometheus-gtfs-exporter/mta"
-	pb "github.com/GlennTatum/prometheus-gtfs-exporter/mta/protobuf"
-
-	"google.golang.org/protobuf/proto"
 )
 
 func main() {
@@ -19,18 +14,16 @@ func main() {
 }
 
 func Exec() error {
-	client := http.Client{}
-	r, err := client.Get(mta.ACE)
-	if err != nil {
-		return err
-	}
-	b, err := io.ReadAll(r.Body)
-	if err != nil {
-		return err
-	}
-	var msg *pb.FeedMessage = &pb.FeedMessage{}
-	proto.Unmarshal(b, msg)
-	fmt.Println(msg)
+	// client := mta.NewClient()
+	// err := client.Get(mta.ACE)
+	// if err != nil {
+	// 	return err
+	// }
+	// d := client.StopDepartures("A02S")
+	// for _, v := range d {
+	// 	fmt.Println(v)
+	// }
+	fmt.Println(mta.StopsTXT())
 
 	return nil
 }
