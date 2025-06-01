@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/GlennTatum/prometheus-gtfs-exporter/mta"
+	"github.com/GlennTatum/prometheus-gtfs-exporter/mta/exporter"
 )
 
 func main() {
@@ -13,17 +12,21 @@ func main() {
 	}
 }
 
-func Exec() error {
-	// client := mta.NewClient()
-	// err := client.Get(mta.ACE)
-	// if err != nil {
-	// 	return err
+func testing() {
+	client := mta.NewClient()
+	client.Get(mta.ACE)
+	// d := client.StopDepartures("125S")
+	// for _, stu := range d {
+	// 	fmt.Println(stu.Departure_Time.Unix())
 	// }
-	// d := client.StopDepartures("A02S")
-	// for _, v := range d {
-	// 	fmt.Println(v)
-	// }
-	fmt.Println(mta.StopsTXT())
+	// fmt.Println(mta.StopsTXT())
 
+	exporter.Collect_departure_frequency(client, "A02S")
+}
+
+func Exec() error {
+
+	// testing()
+	exporter.Exec()
 	return nil
 }

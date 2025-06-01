@@ -9,8 +9,10 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+type StationRouteLabel string
+
 const (
-	ACE = "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace"
+	ACE StationRouteLabel = "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace"
 )
 
 type NoFeedError string
@@ -19,26 +21,23 @@ func (n NoFeedError) Error() string {
 	return "Feed not populated"
 }
 
-type client struct {
+type Client struct {
 	c    http.Client
 	feed *pb.FeedMessage
 }
 
-func NewClient() *client {
-	return &client{
+func NewClient() *Client {
+	return &Client{
 		c: http.Client{},
 	}
 }
 
-/**
- * TODO
- * Returns the Departure Times of a current Stop
- */
 type Departure struct {
+	Departure_Time time.Time
 }
 
-func (client *client) StopDepartures(id string) []time.Time {
-	var departures []time.Time = make([]time.Time, 0)
+func (client *Client) StopDepartures(id string) []Departure {
+	var departures []Departure = make([]Departure, 0)
 
 	for _, e := range client.feed.Entity {
 		tripUpdate := e.TripUpdate
@@ -48,7 +47,11 @@ func (client *client) StopDepartures(id string) []time.Time {
 				// NYCT_Train Extension
 				// e_update := proto.GetExtension(update, pb.E_NyctStopTimeUpdate).(*pb.NyctStopTimeUpdate)
 				if id == *update.StopId {
-					departures = append(departures, time.Unix(*update.Departure.Time, 0))
+					d := Departure{
+						Departure_Time: time.Unix(*update.Departure.Time, 0),
+						// departure_delay: *update.Departure.Delay,
+					}
+					departures = append(departures, d)
 				}
 			}
 		}
@@ -56,8 +59,8 @@ func (client *client) StopDepartures(id string) []time.Time {
 	return departures
 }
 
-func (client *client) Get(s string) error {
-	r, err := client.c.Get(s)
+func (client *Client) Get(s StationRouteLabel) error {
+	r, err := client.c.Get(string(s))
 	if err != nil {
 		return err
 	}

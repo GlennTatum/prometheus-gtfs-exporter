@@ -1,0 +1,13 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus-config/:/etc/prometheus/
+    ports:
+      - "9090:9090"
+  gtfs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9091:9091"
